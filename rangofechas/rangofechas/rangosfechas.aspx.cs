@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace rangofechas
@@ -102,12 +103,66 @@ namespace rangofechas
             }      
         }
         public List<CalendarRange> CheckPreviousManageAssignmentItems(BOCalendarAssignmentItem FormsValues)
-        {
-            List<CalendarRange> resultList;
+        {            
+            List<CalendarRange> allRangeDates = new List<CalendarRange>();
+            List<DateTime> rangoactual = new List<DateTime>();
+            CalendarRange Temp = new CalendarRange();
+            for (DateTime date = FormsValues.StartDate; date <= FormsValues.EndDate; date = date.AddDays(1))
+            {
+                if (FormsValues.IsMonday && date.Day.Equals("Monday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsTuesday && date.Day.Equals("Tuesday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsWednesday && date.Day.Equals("Wednesday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsThursday && date.Day.Equals("Thursday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsFriday && date.Day.Equals("Friday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsSaturday && date.Day.Equals("Saturday"))
+                {
+                    rangoactual.Add(date);
+                }
+                if (FormsValues.IsSunday && date.Day.Equals("Sunday"))
+                {
+                    rangoactual.Add(date);
+                }
+                Temp.StartRange = rangoactual[0];
+                Temp.EndRange = rangoactual[rangoactual.LastIndexOf()];
+                allRangeDates.Add(Temp);
 
-
-            resultList = null;
-            return resultList;
+                ///////////// Falta lo de la periodicidad
+            }               
+            return allRangeDates;
         }
+
+        public List<DateTime> BetweenDates(string startDate, string endDate)
+        {
+            DateTime sdt = DateTime.ParseExact(startDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime edt = DateTime.ParseExact(endDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            List<DateTime> dates = new List<DateTime>();
+            do
+            {
+
+                if (Days.Contains(sdt.DayOfWeek.ToString()))
+                {
+                    dates.Add(sdt.Date.ToString("yyyy-MM-dd"));
+                }
+                sdt = sdt.AddDays(1);
+            } while (sdt.CompareTo(edt) != 1);
+            return dates;
+        }
+
+
     }
 }
