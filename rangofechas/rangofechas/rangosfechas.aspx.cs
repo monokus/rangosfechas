@@ -86,7 +86,7 @@ namespace rangofechas
                     IsWednesday = esmiercoles
                 };
 
-
+                // Determina el result
                 List<CalendarRange> resultado = CheckPreviousManageAssignmentItems(bocA);
 
                 foreach (CalendarRange range in resultado)
@@ -102,8 +102,8 @@ namespace rangofechas
                 lblresult.Text = "Sin Resultado." ;
             }      
         }
-        public List<CalendarRange> CheckPreviousManageAssignmentItems(BOCalendarAssignmentItem FormsValues)
-        {            
+        List<CalendarRange> CheckPreviousManageAssignmentItems(BOCalendarAssignmentItem FormsValues)
+        {
             List<CalendarRange> allRangeDates = new List<CalendarRange>();
             List<DateTime> rangoactual = new List<DateTime>();
             CalendarRange Temp = new CalendarRange();
@@ -138,11 +138,20 @@ namespace rangofechas
                     rangoactual.Add(date);
                 }
                 Temp.StartRange = rangoactual[0];
-                Temp.EndRange = rangoactual[rangoactual.LastIndexOf()];
-                allRangeDates.Add(Temp);
+                Temp.EndRange = rangoactual[rangoactual.Count - 1];
+                if (FormsValues.PeriodicityWeeks == 1)
+                {
+                    allRangeDates.Add(Temp);
+                }
+                else if (FormsValues.PeriodicityWeeks == 2)
+                {
 
-                ///////////// Falta lo de la periodicidad
-            }               
+                }
+                else if (FormsValues.PeriodicityWeeks == 3)
+                {
+
+                }                
+            }
             return allRangeDates;
         }
     }
