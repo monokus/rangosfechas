@@ -145,24 +145,5 @@ namespace rangofechas
             }               
             return allRangeDates;
         }
-
-        public List<DateTime> BetweenDates(string startDate, string endDate)
-        {
-            DateTime sdt = DateTime.ParseExact(startDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            DateTime edt = DateTime.ParseExact(endDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            List<DateTime> dates = new List<DateTime>();
-            do
-            {
-
-                if (Days.Contains(sdt.DayOfWeek.ToString()))
-                {
-                    dates.Add(sdt.Date.ToString("yyyy-MM-dd"));
-                }
-                sdt = sdt.AddDays(1);
-            } while (sdt.CompareTo(edt) != 1);
-            return dates;
-        }
-
-
     }
 }
