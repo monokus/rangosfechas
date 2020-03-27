@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace rangofechas
 {
@@ -11,6 +13,7 @@ namespace rangofechas
             String str = Request.Form["daterange"];
             String per = Request.Form["periodo"];
             String[] fechas;
+            String[] parts;
 
             if (str != null && per!=null)
             {
@@ -18,21 +21,22 @@ namespace rangofechas
                 Int32 count = 2;
                 fechas = str.Split(separator, count, StringSplitOptions.None);
 
-                string strDate = fechas[0];
-                DateTime date1 = DateTime.Today;
-                if (DateTime.TryParse(strDate, out date1))
-                    date1 = DateTime.Parse(strDate);
-                strDate = fechas[1];
-                DateTime date2 = DateTime.Today;
-                if (DateTime.TryParse(strDate, out date2))
-                    date2 = DateTime.Parse(strDate);
-                
-                object lunes= Request.Form["lunes"], 
-                    martes= Request.Form["martes"], 
-                    miercoles= Request.Form["miercoles"], 
-                    jueves= Request.Form["jueves"], 
-                    viernes= Request.Form["viernes"], 
-                    sabado= Request.Form["sabado"], 
+                char[] separ = { '/' };
+                Int32 c = 3;
+
+                parts = fechas[0].Trim().Split(separ, c, StringSplitOptions.None);
+                DateTime date1 = new DateTime(Int32.Parse(parts[2]), Int32.Parse(parts[0]), Int32.Parse(parts[1]));
+
+                parts = fechas[1].Trim().Split(separ, c, StringSplitOptions.None);                
+                DateTime date2 = new DateTime(Int32.Parse(parts[2]), Int32.Parse(parts[0]), Int32.Parse(parts[1]));
+
+                                   
+                object lunes= Request.Form["lunes"],
+                    martes= Request.Form["martes"],
+                    miercoles= Request.Form["miercoles"],
+                    jueves= Request.Form["jueves"],
+                    viernes= Request.Form["viernes"],
+                    sabado= Request.Form["sabado"],
                     domingo = Request.Form["domingo"];
 
                 bool eslunes = false,
@@ -94,7 +98,7 @@ namespace rangofechas
                     lblresult.Text = lblresult.Text
                                 + "["
                                 + Convert.ToString(range.StartRange)
-                                + "," + Convert.ToString(range.EndRange.ToString()) + "]";
+                                + "," + Convert.ToString(range.EndRange.ToString()) + "] ";
                 }
             }
             else
@@ -105,53 +109,52 @@ namespace rangofechas
         List<CalendarRange> CheckPreviousManageAssignmentItems(BOCalendarAssignmentItem FormsValues)
         {
             List<CalendarRange> allRangeDates = new List<CalendarRange>();
-            List<DateTime> rangoactual = new List<DateTime>();
-            CalendarRange Temp = new CalendarRange();
-            for (DateTime date = FormsValues.StartDate; date <= FormsValues.EndDate; date = date.AddDays(1))
+
+            //List<DateTime> rangoactual = new List<DateTime>();
+            //CalendarRange Temp = new CalendarRange();
+
+            var inicio = FormsValues.StartDate;
+
+            var fin = FormsValues.EndDate;
+
+            int cantidadDias = fin.Subtract(inicio).Days + 1;           
+
+            //var diasSemana = new[] { DayOfWeek.Monday };
+
+            List<DayOfWeek> workDays = new List<DayOfWeek>();
+            if (FormsValues.IsMonday)
             {
-                if (FormsValues.IsMonday && date.Day.Equals("Monday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsTuesday && date.Day.Equals("Tuesday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsWednesday && date.Day.Equals("Wednesday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsThursday && date.Day.Equals("Thursday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsFriday && date.Day.Equals("Friday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsSaturday && date.Day.Equals("Saturday"))
-                {
-                    rangoactual.Add(date);
-                }
-                if (FormsValues.IsSunday && date.Day.Equals("Sunday"))
-                {
-                    rangoactual.Add(date);
-                }
-                Temp.StartRange = rangoactual[0];
-                Temp.EndRange = rangoactual[rangoactual.Count - 1];
-                if (FormsValues.PeriodicityWeeks == 1)
-                {
-                    allRangeDates.Add(Temp);
-                }
-                else if (FormsValues.PeriodicityWeeks == 2)
-                {
-
-                }
-                else if (FormsValues.PeriodicityWeeks == 3)
-                {
-
-                }                
+               workDays.Add(DayOfWeek.Monday);
             }
+            if (FormsValues.IsTuesday)
+            {
+                workDays.Add(DayOfWeek.Tuesday);
+            }
+            if (FormsValues.IsWednesday)
+            {
+                workDays.Add(DayOfWeek.Wednesday);
+            }
+            if (FormsValues.IsThursday)
+            {
+                workDays.Add(DayOfWeek.Thursday);
+            }
+            if (FormsValues.IsFriday)
+            {
+                workDays.Add(DayOfWeek.Friday);
+            }
+            if (FormsValues.IsSaturday)
+            {
+                workDays.Add(DayOfWeek.Saturday);
+            }
+            if (FormsValues.IsSunday)
+            {
+                workDays.Add(DayOfWeek.Sunday);
+            }
+            var fechas = Enumerable.Range(0, cantidadDias)
+                                  .Select(i => inicio.AddDays(i))
+                                  .Where(d => workDays.Contains(d.DayOfWeek));
+            var r = fechas.ToList();
+
             return allRangeDates;
         }
     }
