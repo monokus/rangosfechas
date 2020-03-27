@@ -110,8 +110,9 @@ namespace rangofechas
         {
             List<CalendarRange> allRangeDates = new List<CalendarRange>();
 
-            //List<DateTime> rangoactual = new List<DateTime>();
-            //CalendarRange Temp = new CalendarRange();
+            List<DateTime> rangoactual = new List<DateTime>();
+
+            CalendarRange Temp = new CalendarRange();
 
             var inicio = FormsValues.StartDate;
 
@@ -119,41 +120,96 @@ namespace rangofechas
 
             int cantidadDias = fin.Subtract(inicio).Days + 1;           
 
-            //var diasSemana = new[] { DayOfWeek.Monday };
-
             List<DayOfWeek> workDays = new List<DayOfWeek>();
+
+            int cantidadmarcados = 0;
+
             if (FormsValues.IsMonday)
             {
                workDays.Add(DayOfWeek.Monday);
+               cantidadmarcados++;
             }
             if (FormsValues.IsTuesday)
             {
                 workDays.Add(DayOfWeek.Tuesday);
+                cantidadmarcados++;
             }
             if (FormsValues.IsWednesday)
             {
                 workDays.Add(DayOfWeek.Wednesday);
+                cantidadmarcados++;
             }
             if (FormsValues.IsThursday)
             {
                 workDays.Add(DayOfWeek.Thursday);
+                cantidadmarcados++;
             }
             if (FormsValues.IsFriday)
             {
                 workDays.Add(DayOfWeek.Friday);
+                cantidadmarcados++;
             }
             if (FormsValues.IsSaturday)
             {
                 workDays.Add(DayOfWeek.Saturday);
+                cantidadmarcados++;
             }
             if (FormsValues.IsSunday)
             {
                 workDays.Add(DayOfWeek.Sunday);
+                cantidadmarcados++;
             }
             var fechas = Enumerable.Range(0, cantidadDias)
                                   .Select(i => inicio.AddDays(i))
                                   .Where(d => workDays.Contains(d.DayOfWeek));
+
             var r = fechas.ToList();
+
+
+            for (int i = 0; i<= r.Count-1; i++)
+            {
+                for (int j = 0;j<=cantidadmarcados && i<=r.Count-1;j++)
+                {
+                    if ((r[i].DayOfWeek == DayOfWeek.Sunday) && FormsValues.IsSunday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Monday) && FormsValues.IsMonday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Tuesday) && FormsValues.IsTuesday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Wednesday) && FormsValues.IsWednesday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Thursday) && FormsValues.IsThursday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Friday) && FormsValues.IsFriday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                    if ((r[i].DayOfWeek == DayOfWeek.Saturday) && FormsValues.IsSaturday)
+                    {
+                        rangoactual.Add(r[i]);
+                        i++;
+                    }
+                }
+                Temp.StartRange = rangoactual[0];
+                Temp.EndRange = rangoactual[rangoactual.Count-1];
+                allRangeDates.Add(Temp);                    
+            }
 
             return allRangeDates;
         }
